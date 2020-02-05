@@ -1,0 +1,59 @@
+' Gambas class file
+
+' Network check
+' Peter Bauer
+Fast
+Static Public closedown As Boolean = False  'Global vars
+Static Public fmt As String = "dd:mm:yyy hh:nn:ss"
+
+Public Sub Form_Close()
+  Print "Closing: " & Format$(Now, fmt)
+  FMain.Background = Color.blue
+  closedown = True
+End
+
+Public Sub Form_Open()
+Dim note As String          
+Dim default_host As String
+Dim result As String   
+
+note = "Started: "
+Print note & Format$(Now, fmt)
+
+If args[1] Then    ' hostname from Commandline as Arg available ?
+     default_host = Args[1]
+    Else
+     default_host = "google.com"
+  Endif
+
+                     
+  FMain.Background = Color.blue   'default state on start
+  Button1.text = default_host
+  FMain.Show
+  Wait 0.5    'call the event loop to update the display
+  
+ Do       ' endless ping loop
+    Exec ["ping", "-c 1" "-w 1", default_host] To result
+    If InStr(result, "64 bytes from") > 0 Then 
+        'Print "Ping ok"
+        If FMain.Background <> Color.DarkGray Then
+             note = "Online:  " & Format$(Now, fmt)
+             Print note
+             FMain.Background = Color.DarkGray
+             Button1.text = default_host & " ok"
+           Endif
+        
+      Else 
+        'Print "Ping not ok"
+        If FMain.Background <> Color.Red Then
+            note = "Offline: " & Format$(Now, fmt)
+            Button1.text = note            
+            Print note
+            FMain.Background = Color.Red
+            Endif    
+    Endif
+        Wait 0.1     'call the event loop
+        Sleep 1      'give time to the OS
+        If closedown Then Quit     
+  Loop
+End
