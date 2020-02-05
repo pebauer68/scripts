@@ -3,20 +3,18 @@
 ' Network check
 ' Peter Bauer
 Fast
-Static Public closedown As Boolean = False  'Global vars
-Static Public fmt As String = "dd:mm:yyy hh:nn:ss"
+Static Public fmt As String = "dd:mm:yyy hh:nn:ss"    'public global vars
+Static Public default_host As String
+Static Public note As String          
+Static Public result As String   
 
 Public Sub Form_Close()
   Print "Closing: " & Format$(Now, fmt)
   FMain.Background = Color.blue
-  closedown = True
+  Quit
 End
 
 Public Sub Form_Open()
-Dim note As String          
-Dim default_host As String
-Dim result As String   
-
 note = "Started: "
 Print note & Format$(Now, fmt)
 
@@ -26,14 +24,14 @@ If args[1] Then    ' hostname from Commandline as Arg available ?
      default_host = "google.com"
   Endif
 
-                     
   FMain.Background = Color.blue   'default state on start
   Button1.text = default_host
+  FMain.Tooltip = default_host
   FMain.Show
-  Wait 0.5    'call the event loop to update the display
-  
- Do       ' endless ping loop
-    Exec ["ping", "-c 1" "-w 1", default_host] To result
+End
+
+Public Sub Timer1_Timer()
+  Exec ["ping", "-c 1" "-w 1", default_host] To result
     If InStr(result, "64 bytes from") > 0 Then 
         'Print "Ping ok"
         If FMain.Background <> Color.DarkGray Then
@@ -52,8 +50,4 @@ If args[1] Then    ' hostname from Commandline as Arg available ?
             FMain.Background = Color.Red
             Endif    
     Endif
-        Wait 0.1     'call the event loop
-        Sleep 1      'give time to the OS
-        If closedown Then Quit     
-  Loop
 End
