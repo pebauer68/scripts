@@ -2,6 +2,7 @@
 
 ' Network check
 ' Peter Bauer
+' This program has two GUI elements, a form and a button.
 Fast
 Static Public fmt As String = "dd:mm:yyy hh:nn:ss"    'public global vars
 Static Public default_host As String
@@ -27,7 +28,6 @@ If args[1] Then    ' hostname from Commandline as Arg available ?
   FMain.Background = Color.blue   'default state on start
   Button1.text = default_host
   FMain.Tooltip = default_host
-  FMain.Show
 End
 
 Public Sub Timer1_Timer()
