@@ -7,8 +7,10 @@ case "$argc" in
      "" )   ;;                            # do nothing
      e )    $myed ~/bin/fav.txt& ;;       # edit help text
      f )    $myed ~/bin/f& ;;             # edit helper script
-     ?|-help|--help )   echo "usage: Parameter e ... edit help text";
-                        echo "       Parameter f ... edit helper script" ;; 
+     ?|-h|-help|--help )   echo "usage: Parameter e ... edit help text"
+                        echo "       Parameter f ... edit helper script"
+                        exit ;;
+     *)                 echo "$1 is not a recogniced argument. Use -h for help."; exit ;; 
 esac
 
 echo helptext in: ~/bin/fav.txt
